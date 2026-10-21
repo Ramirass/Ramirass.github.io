@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Тренажёр Microstella 3135</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: верстак — слева баланс 3135 с четырьмя гайками, справа экран таймграфера; на телефоне в одну колонку */
+:root {
+  --bg: #EEF0F1;
+  --surface: #FFFFFF;
+  --ink: #1B2126;
+  --muted: #5F6B73;
+  --line: #D3D8DB;
+  --steel: #9AA5AD;
+  --steel-d: #5D6972;
+  --gold: #B7862A;
+  --gold-soft: #F3E6C8;
+  --ruby: #B8243F;
+  --green: #0B5A3B;
+  --good: #1E7A4C;
+  --good-bg: #E1F1E8;
+  --bad: #B8243F;
+  --bad-bg: #F7E0E4;
+  --screen: #0F1A15;
+  --screen-ink: #9FE3BD;
+  --screen-dim: #3E5E4E;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131719; --surface: #1B2023; --ink: #E7EBED; --muted: #97A3AA; --line: #2E363B;
+    --steel: #7D8990; --steel-d: #B5C0C6; --gold: #D6A546; --gold-soft: #3A2F18;
+    --ruby: #E0506A; --green: #5CC08F; --good: #5CC08F; --good-bg: #173326; --bad: #F07088; --bad-bg: #3A1820;
+    --screen: #08110D; --screen-ink: #8FE0B2; --screen-dim: #2E4A3C; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131719; --surface: #1B2023; --ink: #E7EBED; --muted: #97A3AA; --line: #2E363B;
+  --steel: #7D8990; --steel-d: #B5C0C6; --gold: #D6A546; --gold-soft: #3A2F18;
+  --ruby: #E0506A; --green: #5CC08F; --good: #5CC08F; --good-bg: #173326; --bad: #F07088; --bad-bg: #3A1820;
+  --screen: #08110D; --screen-ink: #8FE0B2; --screen-dim: #2E4A3C; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 40px; display: grid; gap: 20px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-family: var(--display); font-weight: 600; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 5vw, 40px); line-height: 1.05; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); max-width: 65ch; margin: 0; }
+.task { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 6px; }
+.task p { margin: 0; flex: 1 1 280px; min-width: 0; }
+.task b { font-family: var(--mono); }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+.panel h2 { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.wheel-box { display: grid; place-items: center; }
+#wheel { width: 100%; max-width: 360px; height: auto; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.pairs { display: grid; gap: 12px; }
+.pair { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 8px; }
+.pair-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.pair-head b { font-family: var(--display); font-weight: 600; font-size: 15px; }
+.pair-head span { font-size: 12.5px; color: var(--muted); }
+.row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nut-name { font-family: var(--mono); font-size: 13px; width: 5.5em; }
+.val { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 14px; min-width: 4.2em; text-align: center; padding: 3px 6px; border-radius: 4px; background: var(--gold-soft); }
+button { font: inherit; font-size: 13.5px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 5px; padding: 5px 10px; line-height: 1.2; }
+button:hover { border-color: var(--steel); }
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+button.step { width: 34px; padding: 5px 0; font-family: var(--mono); font-weight: 600; }
+button.pairbtn { font-size: 12.5px; }
+button.primary { background: var(--green); border-color: var(--green); color: var(--surface); font-weight: 500; }
+.spacer { flex: 1; }
+.screen { background: var(--screen); border-radius: 6px; padding: 12px; display: grid; gap: 8px; color: var(--screen-ink); font-family: var(--mono); }
+.screen-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.big { font-size: clamp(34px, 7vw, 46px); font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.big small { font-size: 14px; font-weight: 400; margin-left: 4px; }
+.meta { display: grid; gap: 2px; font-size: 12.5px; text-align: right; color: var(--screen-ink); }
+.meta span { color: var(--screen-dim); }
+#trace { width: 100%; height: 150px; display: block; border-top: 1px solid var(--screen-dim); border-bottom: 1px solid var(--screen-dim); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-family: var(--mono); font-size: 13px; padding: 4px 10px; border-radius: 999px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.amp { display: flex; gap: 6px; flex-wrap: wrap; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { font-family: var(--display); font-weight: 600; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+td { font-family: var(--mono); }
+tr.sel td { background: var(--gold-soft); }
+.verdicts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 480px) { .verdicts { grid-template-columns: minmax(0, 1fr); } }
+.v { border-radius: 6px; padding: 8px 10px; display: grid; gap: 2px; }
+.v span { font-size: 12px; }
+.v b { font-family: var(--mono); font-size: 16px; font-variant-numeric: tabular-nums; }
+.v.ok { background: var(--good-bg); color: var(--good); }
+.v.no { background: var(--bad-bg); color: var(--bad); }
+.beat { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 8px; }
+.lock { font-family: var(--mono); font-size: 12.5px; padding: 3px 8px; border-radius: 4px; }
+.lock.tight { background: var(--good-bg); color: var(--good); }
+.lock.loose { background: var(--bad-bg); color: var(--bad); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.verdicts.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 480px) { .verdicts.four { grid-template-columns: minmax(0, 1fr); } }
+.check { display: grid; gap: 12px; }
+.check-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .check-grid { grid-template-columns: minmax(0, 1fr); } }
+.check table td { padding: 4px 6px; }
+.check input { font-family: var(--mono); font-size: 14px; width: 5.2em; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.check input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.check .tag { font-family: var(--display); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+.result { display: grid; gap: 6px; font-size: 14px; }
+.result div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-block: 5px; }
+.result div span:last-child { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.err { color: var(--bad); font-size: 13px; margin: 0; }
+.photo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 12px; border: 1px dashed var(--steel); border-radius: 6px; }
+.photo label { font-size: 15px; min-height: 40px; display: inline-flex; align-items: center; cursor: pointer; border: 1px solid var(--green); color: var(--green); border-radius: 5px; padding: 5px 10px; }
+.photo label:focus-within { outline: 2px solid var(--gold); outline-offset: 2px; }
+.photo input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.photo .status { font-size: 13px; color: var(--muted); flex: 1 1 220px; min-width: 0; }
+.paste { flex: 1 1 100%; min-height: 56px; font: inherit; font-size: 14px; padding: 10px; border: 1px dashed var(--green); border-radius: 6px; background: var(--bg); color: var(--ink); resize: none; }
+.paste:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.advice { border: 1px solid var(--gold); background: var(--gold-soft); border-radius: 6px; padding: 10px 12px; display: grid; gap: 6px; font-size: 14px; }
+.advice ul { margin: 0; padding-left: 18px; display: grid; gap: 2px; }
+.advice b { font-family: var(--mono); }
+.advice p { margin: 0; }
+.printed { font-family: var(--mono); font-size: 11.5px; color: var(--muted); display: block; }
+.note { font-size: 12.5px; color: var(--muted); max-width: 70ch; margin: 0; }
+.solved { font-weight: 600; color: var(--good); }
+@media (prefers-reduced-motion: reduce) { #balance { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Урок 6 · тренажёр · Rolex cal. 3135</div>
+    <h1>Гайки Microstella</h1>
+    <p class="lede">Гайки стоят на 12, 3, 6 и 9 часах, когда баланс в покое. Поворачивай их и смотри, как меняется ход на таймграфере; выкачку выставляй поворотом колонки. Цена деления по 25-1: пара длинных ≈ 2 с/сут, пара коротких ≈ 1 с/сут. Если повернуть гайки одной пары по-разному, нарушится пуаз, и ход разойдётся по вертикальным позициям.</p>
+  </header>
+
+  <div class="task" id="taskBox">
+    <p id="taskText"></p>
+    <button id="newTask" class="primary" type="button">Новое задание</button>
+    <button id="toCheck" type="button">По чеку таймграфера ↓</button>
+  </div>
+
+  <div class="grid">
+    <section class="panel" aria-label="Баланс">
+      <h2>Баланс, вид со стороны моста</h2>
+      <div class="wheel-box">
+        <svg id="wheel" viewBox="0 0 320 320" role="img" aria-label="Баланс с четырьмя гайками Microstella">
+          <g id="balance"></g>
+          <g id="static"></g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><i style="background: var(--gold)"></i>гайки Microstella</span>
+        <span><i style="background: var(--ruby)"></i>тяжёлая точка (нарушен пуаз)</span>
+        <span><i style="background: var(--green)"></i>Stud support</span>
+      </div>
+      <div class="pairs" id="pairs"></div>
+      <div class="beat">
+        <div class="pair-head"><b>Выкачка · Stud support 3135-450</b><span>норма ≤ 0,5 мс</span></div>
+        <div class="row">
+          <span class="nut-name">винт 3135-5115</span>
+          <span class="lock tight" id="lockLbl">затянут</span>
+          <button type="button" id="lockBtn">Отпустить винт</button>
+        </div>
+        <div class="row">
+          <span class="nut-name">колонка</span>
+          <button class="step" type="button" id="studL" aria-label="Повернуть колонку против часовой">◄</button>
+          <span class="val" id="studVal">0</span>
+          <button class="step" type="button" id="studR" aria-label="Повернуть колонку по часовой">►</button>
+          <span class="note" id="studHint">Сначала отпусти винт прижима.</span>
+        </div>
+      </div>
+      <div class="row">
+        <button id="resetNuts" type="button">Вернуть гайки в 0</button>
+        <button id="runBtn" type="button" aria-pressed="false">Запустить баланс</button>
+      </div>
+      <div class="row">
+        <button id="knockPoise" type="button">Сбить пуаз</button>
+        <button id="hintBtn" type="button" aria-pressed="true">Скрыть тяжёлую точку</button>
+        <button id="adviceBtn" type="button">Совет по пуазировке</button>
+      </div>
+      <div class="advice" id="advice" aria-live="polite" hidden></div>
+    </section>
+
+    <section class="panel" aria-label="Таймграфер">
+      <h2>Таймграфер · угол подъёма 52°</h2>
+      <div class="screen">
+        <div class="screen-top">
+          <div class="big"><span id="rateBig">+0.0</span><small>с/сут</small></div>
+          <div class="meta">
+            <div><span>позиция</span> <b id="posLbl">CH</b></div>
+            <div><span>амплитуда</span> <b id="ampLbl">270°</b></div>
+            <div><span>выкачка</span> <b id="beatLbl">0.0 мс</b></div>
+          </div>
+        </div>
+        <canvas id="trace" aria-label="Линия хода на таймграфере"></canvas>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Позиция"></div>
+      <div class="amp" role="group" aria-label="Завод">
+        <button class="chip" id="ampHi" aria-pressed="true" type="button">Полный завод · ~270°</button>
+        <button class="chip" id="ampLo" aria-pressed="false" type="button">После 24 ч · ~200°</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Позиция</th><th>Ход, с/сут</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="verdicts four">
+        <div class="v" id="vMean"><span>Средний ход · норма −2…+4</span><b id="mean"></b></div>
+        <div class="v" id="vSpread"><span>Разброс позиций · ≤ 10</span><b id="spread"></b></div>
+        <div class="v" id="vPoise"><span>Пуаз</span><b id="poise"></b></div>
+        <div class="v" id="vBeat"><span>Выкачка · ≤ 0,5 мс, винт затянут</span><b id="beat"></b></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel check" id="chek" aria-label="Симуляция по чеку">
+    <h2>Симуляция по чеку таймграфера</h2>
+    <p class="note">Перепиши показания с чека: ход, амплитуду и выкачку по позициям. Пустые клетки можно оставить. Тренажёр восстановит средний ход, тяжёлую точку и выкачку, а дальше механизм можно настраивать гайками и колонкой. <span class="tag" id="exampleTag">в таблице чек мастерской, MTG-9900A</span></p>
+    <div class="photo" id="photoBox" hidden>
+      <label for="photoCam">Сфотографировать чек<input type="file" id="photoCam" accept="image/*" capture="environment"></label>
+      <label for="photoInput">Выбрать фото<input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp"></label>
+      <textarea class="paste" id="photoPaste" rows="2" aria-label="Поле для вставки фото чека" placeholder="Если кнопки не открывают камеру: скопируй фото чека в галерее, нажми и удерживай здесь и выбери «Вставить»."></textarea>
+      <span class="status" id="photoStatus">Claude прочитает цифры с фото и заполнит таблицу. Проверь их перед работой.</span>
+      <button type="button" id="photoStop" hidden>Остановить</button>
+    </div>
+    <div class="check-grid">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Позиция</th><th>Ход, с/сут</th><th>Амплитуда, °</th><th>Выкачка, мс</th></tr></thead>
+          <tbody id="checkBody"></tbody>
+        </table>
+      </div>
+      <div class="result" id="checkResult" aria-live="polite"></div>
+    </div>
+    <div class="row">
+      <button id="loadCheck" class="primary" type="button">Запустить симуляцию по чеку</button>
+      <button id="clearCheck" type="button">Очистить таблицу</button>
+      <p class="err" id="checkErr" hidden></p>
+    </div>
+  </section>
+
+  <p class="note">Модель учебная. Цена деления взята из Tech. Info. No. 25-1, стр. 35; величина влияния пуаза на ход условная. Смена знака при амплитуде ниже 220° показывает, почему поиск тяжёлой точки ведут при низкой амплитуде. Вертикальные позиции названы по тому, какая гайка баланса смотрит вверх; вниз при этом смотрит противоположная гайка. Нормы — по инструкции нашего мастера.</p>
+</div>
+
+<script>
+(function () {
+  const NUTS = [
+    { id: 'L1', lbl: '12', name: 'Длинная гайка на 12', pair: 'L', k: 1.0, ang: 90 },
+    { id: 'L2', lbl: '6', name: 'Длинная гайка на 6', pair: 'L', k: 1.0, ang: 270 },
+    { id: 'S1', lbl: '3', name: 'Короткая гайка на 3', pair: 'S', k: 0.5, ang: 0 },
+    { id: 'S2', lbl: '9', name: 'Короткая гайка на 9', pair: 'S', k: 0.5, ang: 180 }
+  ];
+  const POS = [
+    { id: 'CH', down: null }, { id: '6 вверх', down: 90 }, { id: '9 вверх', down: 0 },
+    { id: '12 вверх', down: 270 }, { id: '3 вверх', down: 180 }, { id: 'FH', down: null }
+  ];
+  const LIM = 75;          // делений в каждую сторону: ±150 с/сут длинной парой, как в 25-1
+  const G = 3;             // с/сут на единицу дисбаланса (условно)
+  const state = { d: { L1: 0, L2: 0, S1: 0, S2: 0 }, base: 0, pos: 'CH', high: true, hx: 0, hy: 0, showHeavy: true, stud: 0, stud0: 0, loose: false, run: false, check: null, off: { CH: 0, FH: 0 } };
+  const POISE_TOL = 0.5;   // остаточный дисбаланс, который считаем нормой (≈ 3 с/сут разброса вертикалей)
+  const EXAMPLE = { 'CH': ['3', '323', '0,2'], 'FH': ['-2', '318', '0,2'], '12 вверх': ['21', '290', '0,2'], '3 вверх': ['-16', '295', '0,4'], '6 вверх': ['-13', '301', '0,1'], '9 вверх': ['20', '283', '0,2'] };
+  const EXAMPLE_PRINTED = { 'CH': 'CH', 'FH': 'FH', '12 вверх': '12H', '3 вверх': '3H', '6 вверх': '6H', '9 вверх': '9H' };
+  const BEAT_STEP = 0.1;   // мс на одно деление поворота колонки при 270°
+
+  const $ = (id) => document.getElementById(id);
+  const fmt = (x) => (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(1);
+  const rad = (a) => a * Math.PI / 180;
+
+  function newTask() {
+    let b = 0;
+    while (Math.abs(b) < 5) b = Math.round((Math.random() * 36 - 18) * 2) / 2;
+    state.base = b;
+    for (const n of NUTS) state.d[n.id] = 0;
+    let s0 = 0;
+    while (Math.abs(s0) < 4) s0 = Math.round(Math.random() * 24 - 12);
+    state.stud0 = s0; state.stud = 0; state.loose = false;
+    state.hx = 0; state.hy = 0; state.showHeavy = true; state.check = null; state.off = { CH: 0, FH: 0 };
+    $('advice').hidden = true;
+    $('checkResult').innerHTML = '';
+    render();
+  }
+
+  function imbalance() {
+    let x = state.hx, y = state.hy;
+    for (const n of NUTS) {
+      const w = -state.d[n.id] * n.k;
+      x += w * Math.cos(rad(n.ang)); y += w * Math.sin(rad(n.ang));
+    }
+    const m = Math.hypot(x, y);
+    return { m: m < 1e-6 ? 0 : m, phi: Math.atan2(y, x) * 180 / Math.PI };
+  }
+  function meanRate() {
+    let r = state.base;
+    for (const n of NUTS) r += state.d[n.id] * n.k;
+    return r;
+  }
+  function beatMs() {
+    const amp = state.high ? 270 : 200;
+    return Math.abs(state.stud0 + state.stud) * BEAT_STEP * (270 / amp);
+  }
+  function rateAt(posId) {
+    const p = POS.find((q) => q.id === posId);
+    const r = meanRate();
+    if (p.down === null) return r + (state.off[p.id] || 0);
+    const { m, phi } = imbalance();
+    const sign = state.high ? -1 : 0.65;   // выше 220°: тяжёлая точка внизу — отставание
+    return r + sign * G * m * Math.cos(rad(phi - p.down));
+  }
+
+  /* ---------- SVG ---------- */
+  const NS = 'http://www.w3.org/2000/svg';
+  const C = 160, R_OUT = 132, R_IN = 118;
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  const bal = $('balance'), stat = $('static');
+  const nutEls = {};
+  let heavy, studG;
+  function buildWheel() {
+    bal.innerHTML = ''; stat.innerHTML = '';
+    // волосок
+    let d = '';
+    for (let t = 0; t <= 11 * Math.PI * 2; t += 0.15) {
+      const r = 10 + t * 1.25;
+      const x = C + r * Math.cos(t), y = C + r * Math.sin(t);
+      d += (d ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+    }
+    el('path', { d, fill: 'none', stroke: 'var(--steel)', 'stroke-width': 0.9, opacity: 0.8 }, stat);
+    studG = el('g', {}, stat);
+    el('rect', { x: -9, y: -6, width: 18, height: 12, rx: 3, fill: 'var(--green)', stroke: 'var(--steel-d)', 'stroke-width': 0.8 }, studG);
+    el('circle', { cx: 0, cy: 0, r: 2.5, fill: 'var(--surface)' }, studG);
+    // обод
+    el('circle', { cx: C, cy: C, r: (R_OUT + R_IN) / 2, fill: 'none', stroke: 'var(--steel)', 'stroke-width': R_OUT - R_IN }, bal);
+    el('circle', { cx: C, cy: C, r: R_OUT, fill: 'none', stroke: 'var(--steel-d)', 'stroke-width': 1 }, bal);
+    el('circle', { cx: C, cy: C, r: R_IN, fill: 'none', stroke: 'var(--steel-d)', 'stroke-width': 1 }, bal);
+    // перекладина
+    el('rect', { x: C - R_IN, y: C - 7, width: R_IN * 2, height: 14, fill: 'var(--steel)', stroke: 'var(--steel-d)', 'stroke-width': 1, transform: `rotate(-45 ${C} ${C})` }, bal);
+    el('circle', { cx: C, cy: C, r: 16, fill: 'var(--steel)', stroke: 'var(--steel-d)', 'stroke-width': 1 }, bal);
+    el('circle', { cx: C, cy: C, r: 5, fill: 'var(--surface)', stroke: 'var(--steel-d)', 'stroke-width': 1 }, bal);
+    // гайки
+    for (const n of NUTS) {
+      const g = el('g', {}, bal);
+      const len = n.pair === 'L' ? 22 : 14;
+      g.dataset.len = len;
+      el('rect', { x: -len / 2, y: -6, width: len, height: 12, rx: 2, fill: 'var(--gold)', stroke: 'var(--steel-d)', 'stroke-width': 0.8 }, g);
+      el('line', { x1: 0, y1: -6, x2: 0, y2: 6, stroke: 'var(--steel-d)', 'stroke-width': 1.2 }, g);
+      const lab = el('text', { 'font-family': 'IBM Plex Mono, monospace', 'font-size': 11, fill: 'var(--ink)', 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, bal);
+      lab.textContent = n.lbl;
+      nutEls[n.id] = { g, lab, len };
+    }
+    heavy = el('g', {}, bal);
+    el('circle', { cx: 0, cy: 0, r: 7, fill: 'var(--ruby)' }, heavy);
+    el('circle', { cx: 0, cy: 0, r: 11, fill: 'none', stroke: 'var(--ruby)', 'stroke-width': 1.5, opacity: 0.5 }, heavy);
+    // метки 12/3/6/9
+    [['12', 90], ['3', 0], ['6', 270], ['9', 180]].forEach(([t, a]) => {
+      const x = C + 150 * Math.cos(rad(a)), y = C - 150 * Math.sin(rad(a));
+      const tx = el('text', { x, y, 'font-family': 'IBM Plex Mono, monospace', 'font-size': 11, fill: 'var(--muted)', 'text-anchor': 'middle', 'dominant-baseline': 'middle' }, stat);
+      tx.textContent = t;
+    });
+  }
+  function placeNuts() {
+    for (const n of NUTS) {
+      const { g, lab, len } = nutEls[n.id];
+      const r = R_IN - len / 2 - 2 - state.d[n.id] * 0.3;   // «+» — ввинтить к центру
+      const x = C + r * Math.cos(rad(n.ang)), y = C - r * Math.sin(rad(n.ang));
+      g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${-n.ang})`);
+      const lr = R_OUT + 12;
+      lab.setAttribute('x', (C + lr * Math.cos(rad(n.ang))).toFixed(1));
+      lab.setAttribute('y', (C - lr * Math.sin(rad(n.ang))).toFixed(1));
+    }
+    const sa = 55 + (state.stud0 + state.stud) * 1.2;   // угол колонки на рисунке
+    studG.setAttribute('transform', `translate(${(C + 102 * Math.cos(rad(sa))).toFixed(1)} ${(C - 102 * Math.sin(rad(sa))).toFixed(1)}) rotate(${-sa})`);
+    const { m, phi } = imbalance();
+    heavy.style.display = m > POISE_TOL && state.showHeavy ? '' : 'none';
+    const hr = (R_OUT + R_IN) / 2;
+    heavy.setAttribute('transform', `translate(${(C + hr * Math.cos(rad(phi))).toFixed(1)} ${(C - hr * Math.sin(rad(phi))).toFixed(1)})`);
+  }
+
+  /* ---------- controls ---------- */
+  function buildControls() {
+    const wrap = $('pairs');
+    const groups = [
+      { p: 'L', title: 'Длинные гайки · 12 и 6', hint: '1 деление пары ≈ 2 с/сут' },
+      { p: 'S', title: 'Короткие гайки · 3 и 9', hint: '1 деление пары ≈ 1 с/сут' }
+    ];
+    for (const gr of groups) {
+      const box = document.createElement('div');
+      box.className = 'pair';
+      box.innerHTML = `<div class="pair-head"><b>${gr.title}</b><span>${gr.hint}</span></div>`;
+      for (const n of NUTS.filter((q) => q.pair === gr.p)) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `<span class="nut-name">на ${n.lbl}</span>
+          <button class="step" type="button" id="m-${n.id}" aria-label="${n.name}: минус одно деление">−</button>
+          <span class="val" id="v-${n.id}">0</span>
+          <button class="step" type="button" id="p-${n.id}" aria-label="${n.name}: плюс одно деление">+</button>`;
+        box.appendChild(row);
+      }
+      const prow = document.createElement('div');
+      prow.className = 'row';
+      prow.innerHTML = `<span class="nut-name">пара</span>
+        <button class="pairbtn" type="button" id="pm-${gr.p}">− обе на 1 деление</button>
+        <button class="pairbtn" type="button" id="pp-${gr.p}">+ обе на 1 деление</button>`;
+      box.appendChild(prow);
+      wrap.appendChild(box);
+    }
+    for (const n of NUTS) {
+      $('m-' + n.id).onclick = () => bump(n.id, -1);
+      $('p-' + n.id).onclick = () => bump(n.id, 1);
+    }
+    for (const p of ['L', 'S']) {
+      $('pm-' + p).onclick = () => NUTS.filter((n) => n.pair === p).forEach((n) => bump(n.id, -1, true));
+      $('pp-' + p).onclick = () => NUTS.filter((n) => n.pair === p).forEach((n) => bump(n.id, 1, true));
+    }
+    const chips = $('chips');
+    for (const p of POS) {
+      const b = document.createElement('button');
+      b.className = 'chip'; b.type = 'button'; b.id = 'pos-' + p.id; b.textContent = p.id;
+      b.onclick = () => { state.pos = p.id; render(); };
+      chips.appendChild(b);
+    }
+    $('ampHi').onclick = () => { state.high = true; render(); };
+    $('ampLo').onclick = () => { state.high = false; render(); };
+    $('resetNuts').onclick = () => { $('advice').hidden = true; for (const n of NUTS) state.d[n.id] = 0; render(); };
+    $('newTask').onclick = newTask;
+    $('knockPoise').onclick = () => {
+      $('advice').hidden = true;
+      let hx = 0, hy = 0;
+      while (Math.hypot(hx, hy) < 1.5) {
+        hx = 0.5 * Math.round(Math.random() * 10 - 5);   // по оси 3–9: шаг короткой гайки
+        hy = Math.round(Math.random() * 6 - 3);          // по оси 12–6: шаг длинной гайки
+      }
+      state.hx += hx; state.hy += hy; state.showHeavy = false; render();
+    };
+    $('adviceBtn').onclick = showAdvice;
+    $('hintBtn').onclick = () => { state.showHeavy = !state.showHeavy; render(); };
+    $('lockBtn').onclick = () => { state.loose = !state.loose; render(); };
+    $('studL').onclick = () => { state.stud -= 1; render(); };
+    $('studR').onclick = () => { state.stud += 1; render(); };
+    $('runBtn').onclick = () => { state.run = !state.run; if (!state.run) bal.removeAttribute('transform'); render(); };
+  }
+  function bump(id, dv, silent) {
+    $('advice').hidden = true;
+    state.d[id] = Math.max(-LIM, Math.min(LIM, state.d[id] + dv));
+    render();
+  }
+
+  /* ---------- чек таймграфера ---------- */
+  const CK = POS.map((p) => p.id);
+  const keyOf = (id) => id.replace(/\s+/g, '_');
+  function buildCheck(values) {
+    $('checkBody').innerHTML = CK.map((id) => {
+      const v = (values && values[id]) || ['', '', ''];
+      const k = keyOf(id);
+      return `<tr><td>${id}<span class="printed" id="ck-p-${k}"></span></td>
+        <td><input id="ck-r-${k}" inputmode="decimal" aria-label="${id}: ход" value="${v[0]}"></td>
+        <td><input id="ck-a-${k}" inputmode="decimal" aria-label="${id}: амплитуда" value="${v[1]}"></td>
+        <td><input id="ck-b-${k}" inputmode="decimal" aria-label="${id}: выкачка" value="${v[2]}"></td></tr>`;
+    }).join('');
+    $('checkBody').querySelectorAll('input').forEach((i) => { i.oninput = () => { $('exampleTag').hidden = true; }; });
+  }
+  function num(id) {
+    const t = $(id).value.trim().replace(',', '.').replace('−', '-').replace('+', '');
+    if (t === '') return null;
+    const x = Number(t);
+    return Number.isFinite(x) ? x : NaN;
+  }
+  const avg = (a) => a.reduce((s, x) => s + x, 0) / a.length;
+  function clockOf(phi) {
+    let h = Math.round((3 - phi / 30) * 2) / 2;
+    h = ((h % 12) + 12) % 12;
+    const f = (x) => (x === 0 ? 12 : x);
+    return Number.isInteger(h) ? `${f(h)} ч` : `между ${f(Math.floor(h))} и ${f((Math.floor(h) + 1) % 12)} ч`;
+  }
+  function loadCheck(quiet) {
+    const R = {}, A = {}, B = [];
+    for (const id of CK) {
+      const k = keyOf(id);
+      const r = num('ck-r-' + k), a = num('ck-a-' + k), b = num('ck-b-' + k);
+      if ([r, a, b].some((x) => Number.isNaN(x))) return showErr(`В строке ${id} не число. Пиши цифры, дробную часть можно через запятую.`);
+      if (r !== null) R[id] = r;
+      if (a !== null) A[id] = a;
+      if (b !== null) B.push(Math.abs(b));
+    }
+    if (Object.keys(R).length < 2) return showErr('Нужен ход хотя бы в двух позициях.');
+    $('checkErr').hidden = true;
+
+    const vertIds = POS.filter((p) => p.down !== null).map((p) => p.id), horIds = ['CH', 'FH'];
+    const vAmp = vertIds.filter((id) => id in A).map((id) => A[id]);
+    const allAmp = Object.values(A);
+    const ampRef = vAmp.length ? avg(vAmp) : allAmp.length ? avg(allAmp) : 270;
+    const high = ampRef >= 220;
+    const sign = high ? -1 : 0.65;
+
+    const hR = horIds.filter((id) => id in R).map((id) => R[id]);
+    const vR = vertIds.filter((id) => id in R).map((id) => R[id]);
+    const allV = vertIds.every((id) => id in R);
+    const base = allV ? avg(vR) : hR.length ? avg(hR) : avg(vR);   // точка, вокруг которой качаются вертикали
+    const off = { CH: 0, FH: 0 };
+    for (const id of horIds) if (id in R) off[id] = R[id] - base;
+    const hx = ('9 вверх' in R && '3 вверх' in R) ? (R['9 вверх'] - R['3 вверх']) / (2 * sign * G) : 0;
+    const hy = ('6 вверх' in R && '12 вверх' in R) ? (R['6 вверх'] - R['12 вверх']) / (2 * sign * G) : 0;
+    const beat = B.length ? avg(B) : 0;
+    const ampModel = high ? 270 : 200;
+    const s0 = Math.round(beat / BEAT_STEP * ampModel / 270);
+
+    for (const n of NUTS) state.d[n.id] = 0;
+    $('advice').hidden = true;
+    state.base = Math.round(base * 10) / 10;
+    state.hx = hx; state.hy = hy;
+    state.off = { CH: Math.round(off.CH * 10) / 10, FH: Math.round(off.FH * 10) / 10 };
+    state.stud0 = s0 * (Math.random() < 0.5 ? -1 : 1); state.stud = 0; state.loose = false;
+    state.high = high; state.showHeavy = false;
+    state.check = { high, amp: A };
+    state.pos = 'CH';
+
+    const m = Math.hypot(hx, hy), phi = Math.atan2(hy, hx) * 180 / Math.PI;
+    const lines = [
+      ['Центр вертикалей', fmt(base) + ' с/сут'],
+      ['Режим амплитуды', Math.round(ampRef) + '° · ' + (high ? 'выше 220°' : 'ниже 220°, знак ошибки пуаза обратный')],
+      ['Тяжёлая точка', m > POISE_TOL ? clockOf(phi).replace(/^(\d)/, 'около $1') : 'не выражена'],
+      ['Выкачка', beat.toFixed(1) + ' мс']
+    ];
+    for (const id of horIds) if (id in R && allV) lines.push([`${id} относительно вертикалей · гайками не убирается`, fmt(off[id]) + ' с/сут']);
+    if (allV) {
+      const dev = Math.max(...vertIds.map((id) => Math.abs(rateAt(id) - R[id])));
+      if (dev > 0.05) lines.push(['Расхождение модели с чеком по вертикалям', '± ' + dev.toFixed(1) + ' с/сут']);
+    }
+    $('checkResult').innerHTML = lines.map(([a, b]) => `<div><span>${a}</span><span>${b}</span></div>`).join('');
+    render();
+    if (quiet !== true) document.querySelector('.task').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+  function showErr(t) { $('checkErr').textContent = t; $('checkErr').hidden = false; }
+
+  /* ---------- чтение фото чека через Claude ---------- */
+  const PHOTO_PROMPT = `На фото — показания таймграфера (распечатанный чек или экран прибора) для механических часов Rolex cal. 3135.
+Найди для каждой позиции: ход (rate, с/сут, со знаком), амплитуду (градусы) и выкачку (beat error, мс).
+Разложи позиции по шести ячейкам:
+- "CH" — циферблат вверх (dial up, DU, CH);
+- "FH" — циферблат вниз (dial down, DD, FH);
+- "12 вверх" — 12 часов вверху (12U, 12H, crown right, CR);
+- "3 вверх" — 3 часа вверху (3U, 3H, crown up, CU, PU);
+- "6 вверх" — 6 часов вверху (6U, 6H, crown left, CL);
+- "9 вверх" — 9 часов вверху (9U, 9H, crown down, CD, PD).
+Если позицию нельзя уверенно отнести к ячейке, поставь slot: null. Не выдумывай чисел: если значение не видно, ставь null.
+Ответь только JSON такого вида:
+{"rows":[{"printed":"как подписано на чеке","slot":"CH","rate":-3.5,"amp":285,"beat":0.4}],"note":"коротко, что не удалось прочитать, или пустая строка"}`;
+  let photoCtl = null;
+  async function initPhoto() {
+    const sample = await window.claude?.use?.('sample');
+    if (!sample) return;
+    const lim = await sample.limits().catch(() => null);
+    if (!lim || !lim.images) return;
+    $('photoBox').hidden = false;
+    $('photoInput').accept = lim.images.mediaTypes.join(',');
+    $('photoStop').onclick = () => photoCtl?.abort();
+    const onPick = (inp) => { const f = inp.files[0]; inp.value = ''; if (f) readPhoto(f); };
+    const readPhoto = async (file) => {
+      if (photoCtl) return;
+      if (lim.images.maxInputBytes && file.size > lim.images.maxInputBytes) {
+        $('photoStatus').textContent = 'Фото слишком большое. Сними чек ещё раз или выбери снимок поменьше.';
+        return;
+      }
+      photoCtl = new AbortController();
+      $('photoStop').hidden = false;
+      $('photoStatus').textContent = 'Claude читает чек… Обычно это занимает до минуты.';
+      try {
+        const res = await sample.json(PHOTO_PROMPT, { images: [file], signal: photoCtl.signal });
+        const rows = Array.isArray(res?.rows) ? res.rows : [];
+        const vals = {}, printed = {};
+        let used = 0;
+        for (const r of rows) {
+          const slot = typeof r?.slot === 'string' ? r.slot.trim() : null;
+          if (!slot || !CK.includes(slot)) continue;
+          const f = (x) => (typeof x === 'number' && Number.isFinite(x) ? String(x).replace('.', ',') : '');
+          vals[slot] = [f(r.rate), f(r.amp), f(r.beat)];
+          printed[slot] = String(r.printed ?? '').slice(0, 20);
+          used++;
+        }
+        if (!used) {
+          $('photoStatus').textContent = 'На фото не нашлось показаний по позициям. Попробуй снимок ближе и ровнее или введи цифры вручную.';
+          return;
+        }
+        buildCheck(vals);
+        for (const id of CK) if (printed[id]) $('ck-p-' + keyOf(id)).textContent = 'на чеке: ' + printed[id];
+        $('exampleTag').hidden = true;
+        const note = typeof res.note === 'string' && res.note.trim() ? ' ' + res.note.trim() : '';
+        $('photoStatus').textContent = `Заполнено позиций: ${used}. Сверь цифры с чеком и подписи позиций.${note}`;
+        loadCheck();
+      } catch (e) {
+        const msg = {
+          cancelled: 'Чтение остановлено.',
+          not_granted: 'Доступ к Claude для этой страницы не разрешён. Введи цифры вручную.',
+          sampling_disabled: 'Claude недоступен для этого аккаунта. Введи цифры вручную.',
+          image_rejected: 'Этот файл не подошёл. Нужна фотография JPEG, PNG или WebP.',
+          rate_limited: 'Слишком много запросов. Попробуй через несколько минут.',
+          invalid_json: 'Claude не смог разобрать чек. Попробуй другое фото.',
+          refused: 'Claude не стал читать это изображение. Попробуй другое фото.'
+        }[e?.code] || 'Не получилось прочитать фото. Попробуй ещё раз или введи цифры вручную.';
+        $('photoStatus').textContent = msg;
+        if (['not_granted', 'sampling_disabled', 'images_unavailable', 'not_declared', 'capability_disabled', 'capability_removed'].includes(e?.code)) {
+          $('photoInput').disabled = true; $('photoCam').disabled = true;
+        }
+      } finally {
+        $('photoStop').hidden = true;
+        photoCtl = null;
+      }
+    };
+    $('photoInput').onchange = () => onPick($('photoInput'));
+    $('photoCam').onchange = () => onPick($('photoCam'));
+    const takeImage = (list) => {
+      for (const it of list || []) {
+        const f = it.kind === 'file' ? it.getAsFile() : (it instanceof Blob ? it : null);
+        if (f && /^image\//.test(f.type)) return f;
+      }
+      return null;
+    };
+    $('photoPaste').addEventListener('paste', (e) => {
+      const f = takeImage(e.clipboardData && e.clipboardData.items);
+      e.preventDefault();
+      $('photoPaste').value = '';
+      if (f) readPhoto(f);
+      else $('photoStatus').textContent = 'В буфере нет изображения. Скопируй само фото, а не ссылку на него.';
+    });
+    $('photoPaste').addEventListener('input', () => { $('photoPaste').value = ''; });
+    $('photoBox').addEventListener('dragover', (e) => e.preventDefault());
+    $('photoBox').addEventListener('drop', (e) => {
+      e.preventDefault();
+      const f = takeImage(e.dataTransfer && e.dataTransfer.files);
+      if (f) readPhoto(f);
+    });
+  }
+
+  /* ---------- совет: минимум поворотов гаек ---------- */
+  let advicePlan = null;
+  function mean6() { return POS.reduce((s, p) => s + rateAt(p.id), 0) / POS.length; }
+  function poiseXY() {
+    let x = state.hx, y = state.hy;
+    for (const n of NUTS) { const w = -state.d[n.id] * n.k; x += w * Math.cos(rad(n.ang)); y += w * Math.sin(rad(n.ang)); }
+    return { x, y };
+  }
+  function makeAdvice() {
+    const { x, y } = poiseXY();
+    const m0 = mean6();
+    let best = null;
+    for (let a = -LIM; a <= LIM; a++) {           // Δ длинной на 12
+      for (let c = -LIM; c <= LIM; c++) {         // Δ короткой на 3
+        // подбираем пару так, чтобы остаток пуаза был минимальным
+        const b = Math.round(a - y);              // y' = y − a + b → 0
+        const e = Math.round(c - 2 * x);          // x' = x − c/2 + e/2 → 0
+        const nd = { L1: state.d.L1 + a, L2: state.d.L2 + b, S1: state.d.S1 + c, S2: state.d.S2 + e };
+        if (Object.values(nd).some((v) => Math.abs(v) > LIM)) continue;
+        const rx = x - c / 2 + e / 2, ry = y - a + b;
+        if (Math.hypot(rx, ry) > POISE_TOL + 1e-9) continue;
+        const m1 = m0 + a + b + 0.5 * (c + e);
+        if (m1 < -2 || m1 > 4) continue;
+        const cost = Math.abs(a) + Math.abs(b) + Math.abs(c) + Math.abs(e);
+        const key = cost * 100 + Math.abs(m1 - 1);
+        if (!best || key < best.key) best = { key, cost, d: { L1: a, L2: b, S1: c, S2: e }, m1, res: Math.hypot(rx, ry) };
+      }
+    }
+    return { best, m0, ok: Math.hypot(x, y) <= POISE_TOL };
+  }
+  function showAdvice() {
+    const box = $('advice');
+    const { best, m0, ok } = makeAdvice();
+    advicePlan = null;
+    if (!best) {
+      box.innerHTML = '<p>Не нашлось решения в пределах хода гаек. Верни гайки в 0 и попробуй снова.</p>';
+      box.hidden = false; return;
+    }
+    if (best.cost === 0) {
+      box.innerHTML = `<p>${ok ? 'Пуаз в норме' : 'Пуаз почти в норме'}, средний ход ${fmt(m0)} с/сут в допуске. Гайки трогать не нужно.</p>`;
+      box.hidden = false; return;
+    }
+    const items = NUTS.filter((n) => best.d[n.id]).map((n) => {
+      const v = best.d[n.id];
+      return `<li>${n.pair === 'L' ? 'Длинная' : 'Короткая'} гайка на ${n.lbl}: <b>${v > 0 ? '+' : '−'}${Math.abs(v)}</b> ${Math.abs(v) === 1 ? 'деление' : Math.abs(v) < 5 ? 'деления' : 'делений'} (${v > 0 ? 'к центру, легче' : 'от центра, тяжелее'})</li>`;
+    }).join('');
+    box.innerHTML = `<p><b>${best.cost}</b> ${best.cost < 5 ? 'деления' : 'делений'} всего — меньше нельзя.</p><ul>${items}</ul>
+      <p>Средний ход: ${fmt(m0)} → <b>${fmt(best.m1)}</b> с/сут.${best.res > 0.05 ? ' Небольшой остаток пуаза останется: шаг гайки грубее, чем дисбаланс.' : ''}</p>
+      <div class="row"><button type="button" id="applyAdvice">Применить совет</button></div>`;
+    advicePlan = best.d;
+    box.hidden = false;
+    $('applyAdvice').onclick = () => {
+      if (!advicePlan) return;
+      for (const n of NUTS) state.d[n.id] += advicePlan[n.id];
+      advicePlan = null; box.hidden = true; render();
+    };
+  }
+
+  /* ---------- render ---------- */
+  function render() {
+    for (const n of NUTS) {
+      const v = state.d[n.id];
+      $('v-' + n.id).textContent = (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v);
+    }
+    placeNuts();
+    const r = rateAt(state.pos);
+    $('rateBig').textContent = fmt(r);
+    $('posLbl').textContent = state.pos;
+    const ca = state.check && state.check.high === state.high && state.check.amp[state.pos];
+    $('ampLbl').textContent = (ca ? Math.round(ca) : (state.high ? 270 : 200)) + '°';
+    $('ampHi').setAttribute('aria-pressed', String(state.high));
+    $('ampLo').setAttribute('aria-pressed', String(!state.high));
+    for (const p of POS) $('pos-' + p.id).setAttribute('aria-pressed', String(p.id === state.pos));
+
+    const rows = POS.map((p) => ({ id: p.id, r: rateAt(p.id) }));
+    $('tbody').innerHTML = rows.map((x) =>
+      `<tr class="${x.id === state.pos ? 'sel' : ''}"><td>${x.id}</td><td>${fmt(x.r)}</td></tr>`).join('');
+    const mean = rows.reduce((s, x) => s + x.r, 0) / rows.length;
+    const spread = Math.max(...rows.map((x) => x.r)) - Math.min(...rows.map((x) => x.r));
+    const { m } = imbalance();
+    const okMean = mean >= -2 && mean <= 4, okSpread = spread <= 10, okPoise = m <= POISE_TOL + 1e-9;
+    $('mean').textContent = fmt(mean);
+    $('spread').textContent = spread.toFixed(1);
+    $('poise').textContent = okPoise ? 'в норме' : 'нарушен';
+    $('vMean').className = 'v ' + (okMean ? 'ok' : 'no');
+    $('vSpread').className = 'v ' + (okSpread ? 'ok' : 'no');
+    $('vPoise').className = 'v ' + (okPoise ? 'ok' : 'no');
+
+    const bm = beatMs();
+    const okBeat = bm <= 0.5 + 1e-9 && !state.loose;
+    $('beatLbl').textContent = bm.toFixed(1) + ' мс';
+    $('beat').textContent = bm.toFixed(1) + ' мс' + (state.loose ? ' · винт отпущен' : '');
+    $('vBeat').className = 'v ' + (okBeat ? 'ok' : 'no');
+    $('lockLbl').textContent = state.loose ? 'отпущен' : 'затянут';
+    $('lockLbl').className = 'lock ' + (state.loose ? 'loose' : 'tight');
+    $('lockBtn').textContent = state.loose ? 'Затянуть винт' : 'Отпустить винт';
+    $('studL').disabled = $('studR').disabled = !state.loose;
+    const sv = state.stud;
+    $('studVal').textContent = (sv > 0 ? '+' : sv < 0 ? '−' : '') + Math.abs(sv);
+    $('studHint').textContent = state.loose ? 'Поворачивай колонку, пока выкачка не станет ≤ 0,5 мс, потом затяни винт.' : (bm > 0.5 ? 'Сначала отпусти винт прижима.' : '');
+    $('hintBtn').textContent = state.showHeavy ? 'Скрыть тяжёлую точку' : 'Показать тяжёлую точку';
+    $('hintBtn').setAttribute('aria-pressed', String(state.showHeavy));
+    $('runBtn').textContent = state.run ? 'Остановить баланс' : 'Запустить баланс';
+    $('runBtn').setAttribute('aria-pressed', String(state.run));
+    const solved = okMean && okSpread && okPoise && okBeat;
+    $('taskText').innerHTML = solved
+      ? `<span class="solved">Готово.</span> Ход и выкачка в норме, пуаз не нарушен, винт затянут. Исходная ошибка хода была <b>${fmt(state.base)} с/сут</b>.`
+      : state.check
+        ? `<b>Механизм с чека.</b> Средний ход <b>${fmt(state.base)} с/сут</b>, выкачка <b>${bm.toFixed(1)} мс</b>${m > POISE_TOL ? ', пуаз нарушен' : ''}${(state.off.CH || state.off.FH) ? `, горизонтали смещены от вертикалей (CH ${fmt(state.off.CH)}, FH ${fmt(state.off.FH)}) — это трение, гайками его не убрать` : ''}. Приведи ход в норму −2…+4 с/сут${m > POISE_TOL ? ', компенсируй тяжёлую точку' : ''} и выставь выкачку ≤ 0,5 мс.`
+        : (state.hx || state.hy)
+        ? `<b>Пуаз сбит.</b> Найди тяжёлую точку по разбросу хода в вертикальных позициях и компенсируй её, поворачивая гайки пары неодинаково. Потом верни средний ход в норму −2…+4 с/сут. Выкачка <b>${bm.toFixed(1)} мс</b> — не больше 0,5.`
+        : `<b>Задание.</b> После сборки механизм показывает <b>${fmt(state.base)} с/сут</b>. Выкачка <b>${bm.toFixed(1)} мс</b>. Приведи средний ход в норму −2…+4 с/сут, не нарушь пуаз и выстави выкачку ≤ 0,5 мс.`;
+  }
+
+  /* ---------- trace ---------- */
+  const cv = $('trace'), ctx = cv.getContext('2d');
+  const pts = [];
+  let y0 = 0, last = 0;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function css(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  function sizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = cv.clientWidth, h = cv.clientHeight;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function drawTrace() {
+    const w = cv.clientWidth, h = cv.clientHeight;
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = css('--screen-dim'); ctx.lineWidth = 1;
+    for (let gy = 1; gy < 4; gy++) { ctx.beginPath(); ctx.moveTo(0, gy * h / 4); ctx.lineTo(w, gy * h / 4); ctx.stroke(); }
+    ctx.fillStyle = css('--screen-ink');
+    const n = pts.length;
+    for (let i = 0; i < n; i++) {
+      const x = w - (n - 1 - i) * 2;
+      if (x < 0) continue;
+      let y = ((h / 2 - pts[i]) % h + h) % h;
+      ctx.fillRect(x, y - 1, 1.6, 1.6);
+      ctx.fillRect(x, ((y + beatMs() * 22) % h) - 1, 1.6, 1.6);
+    }
+  }
+  function tick(t) {
+    if (t - last > 40) {
+      last = t;
+      y0 += rateAt(state.pos) * 0.06;
+      pts.push(y0);
+      if (pts.length > 800) pts.shift();
+      drawTrace();
+    }
+    if (!reduce && state.run) {
+      const a = 150 * Math.sin(t / 900);
+      bal.setAttribute('transform', `rotate(${(a * 0.35).toFixed(2)} ${C} ${C})`);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  buildWheel();
+  buildControls();
+  buildCheck(EXAMPLE);
+  for (const id of CK) $('ck-p-' + keyOf(id)).textContent = 'на чеке: ' + EXAMPLE_PRINTED[id];
+  $('loadCheck').onclick = loadCheck;
+  $('toCheck').onclick = () => $('chek').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  initPhoto();
+  $('clearCheck').onclick = () => { buildCheck(null); $('exampleTag').hidden = true; $('checkErr').hidden = true; };
+  newTask();
+  loadCheck(true);
+  sizeCanvas();
+  if (reduce) { for (let i = 0; i < 300; i++) { y0 += rateAt(state.pos) * 0.06; pts.push(y0); } drawTrace(); }
+  window.addEventListener('resize', () => { sizeCanvas(); drawTrace(); });
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>
